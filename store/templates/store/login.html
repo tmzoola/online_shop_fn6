@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Login</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">FN6 Ecommerce webpage</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+        	<div class="row">
+                <center>
+        			<div class="col-8">
+        				<br/><br/>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <input class="form-class" placeholder="username" type="text" name="username">
+                            <input class="form-class" placeholder="password" type="password" name="password">
+                            <button type="submit">login</button>
+
+
+                        </form>
+                        <br/><br/>
+        			</div>
+                </center>
+        	</div>
+        </div>
+
+{% endblock %}

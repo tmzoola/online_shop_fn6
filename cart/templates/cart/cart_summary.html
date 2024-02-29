@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">View your cart...</p>
+                </div>
+            </div>
+        </header>
+<br>
+<br>
+<br>
+<br>
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            {% for product in cart_prods %}
+
+            <div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{product.name}}</h5>
+        <p class="card-text">{{product.description | truncatewords:10}}</p>
+          <button type="button" class="btn btn-light">{{product.price}}</button>
+        {% for key,value in prod_count.items %}
+          {% if key == product.id|slugify %}
+           <input class="form-control text-center me-3" id="select{{product.id}}" type="num" value="{{value}}" style="max-width: 3rem" />
+          {% endif %}
+          {% endfor %}
+          <button type="button" data-index="{{product.id}}"  class="btn btn-secondary update-cart">Update</button>
+          <button type="button" data-index="{{product.id}}"  class="btn btn-danger delete-product">Delete</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+            {% endfor %}
+
+
+        </div>
+        </div>
+        </section>
+
+<h1>Total: {{total}}</h1>
+<h1><a class="btn btn-outline-success"  data-bs-toggle="modal" data-bs-target="#orderModal">Order</a></h1>
+
+<!-- Modal -->
+<div class="modal" id="orderModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Siz haqiqatdan ham quyidagilarga buyurtma mermoqchimisiz</p>
+          <ul>
+          {% for product in cart.get_products %}
+            <li>{{product.name}}</li>
+                {% for key,value in cart.get_quantity.items %}
+                    {% if key == product.id|slugify %}
+                        <li>{{value}}</li>
+                    {% endif %}
+                {% endfor %}
+
+          {% endfor %}
+              <li>Total: {{total}}</li>
+          </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="{% url 'cart:order_save' %}" type="button" class="btn btn-primary">Yes</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+
+
+<script>
+
+   // Update Product Quantity
+    $(document).on('click', '.update-cart',function(e){
+        e.preventDefault();
+        var product_id = $(this).data('index')
+        $.ajax({
+            type:'POST',
+            url:"{% url 'cart:cart_update' %}",
+            data:{
+                product_id: $(this).data('index'),
+                prod_count: $('#select'+ product_id).val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action:'post'
+            },
+            success: function(){
+                location.reload()
+            },
+            error: function (xhr,errmsg, err) {
+
+            }
+        })
+    })
+      // Delete Product from Cart
+    $(document).on('click', '.delete-product',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:"{% url 'cart:cart_delete' %}",
+            data:{
+                product_id: $(this).data('index'),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action:'post'
+            },
+            success: function(){
+                location.reload()
+            },
+            error: function (xhr,errmsg, err) {
+
+            }
+        })
+    })
+</script>
+
+{% endblock %}

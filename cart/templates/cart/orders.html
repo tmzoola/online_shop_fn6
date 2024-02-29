@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Orders</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">View your orders history...</p>
+                </div>
+            </div>
+        </header>
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        {% for order in orders %}
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="card" style="width: 18rem;">
+              <div class="card-header">
+                {{order.order}}
+              </div>
+              <ul class="list-group list-group-flush">
+                  {% for item in order.items %}
+                <li class="list-group-item">{{item.name}}</li>
+                <li class="list-group-item">{{item.price}}</li>
+                <li class="list-group-item">{{item.quantity}}</li>
+                <li class="list-group-item">{{item.get_total_price}}</li>
+                  {% endfor %}
+              </ul>
+            </div>
+        {% endfor %}
+
+        </div>
+        </div>
+        </section>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+<br>
+<br>
+<br>
+
+
+
+{% endblock %}

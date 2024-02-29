@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{product.image.url}}" alt="..." /></div>
+            <div class="col-md-6">
+                <div class="small mb-1">SKU: BST-498</div>
+                <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+                <div class="fs-5 mb-5">
+                    {% if product.is_sale %}
+                    <span class="text-decoration-line-through">{{product.price}}</span>
+                    <span>{{product.sale_price}}</span>
+                    <br>
+                        iD: {{product.id}}
+                    {% else %}
+                    <span>{{product.price}}</span>
+                           <br>
+                        iD: {{product.id}}
+                    {% endif %}
+                </div>
+                <p class="lead">{{product.description}}</p>
+                <div class="d-flex">
+                    <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
+                    <button class="btn btn-outline-dark flex-shrink-0" value="{{product.id}}" id="add-cart" type="button">
+                        <i class="bi-cart-fill me-1"></i>
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    $(document).on('click', '#add-cart',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:"{% url 'cart:cart_add' %}",
+            data:{
+                product_id: $('#add-cart').val(),
+                prod_count: $('#inputQuantity').val(),
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                action:'post'
+            },
+            success: function(json){
+                console.log(json)
+                document.getElementById("cart_quantity").textContent = json.quantity
+            },
+            error: function (xhr,errmsg, err) {
+                
+            }
+        })
+    })
+</script>
+
+{% endblock %}
